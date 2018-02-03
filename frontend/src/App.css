@@ -1,5 +1,5 @@
 .App {
-  text-align: center;
+  text-align: left;
 }
 
 .App-header {
@@ -7,19 +7,31 @@
   height: 100px;
   padding: 20px;
   color: white;
-  text-align: left;
 }
 
 .App-title {
   font-size: 1.5em;
 }
 
+.nav {
+}
+
 .container {
   padding: 20px;
 }
 
-.cat-table {
-  text-align: left;
+.table {
+  margin-top: 26px;
+}
+
+.post {
+  background-color: #f0f0f0;
+  border: 1px solid #d3d3d3;
+  padding: 10px;
+}
+
+.post-info {
+  text-align: right;
 }
 
 .App-footer {
@@ -27,4 +39,5 @@
   height: 100px;
   padding: 20px;
   color: white;
+  text-align: center;
 }
