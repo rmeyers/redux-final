@@ -5,10 +5,11 @@ export const Posts = () => {
     return (
         <div>
           <h1>Posts</h1>
-          <div class="nav">
+          <div className="nav">
             <button className="btn btn-primary">Add Post</button>
             <DropdownButton
               title={'Sort By'}
+              id="3"
             >
               <MenuItem eventKey="date" active>Date</MenuItem>
               <MenuItem eventKey="rating">Rating</MenuItem>

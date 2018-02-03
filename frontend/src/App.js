@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import {connect} from "react-redux";
 import './App.css';
 
 import { LandingPage } from "./components/LandingPage";
@@ -6,6 +7,8 @@ import { LandingPage } from "./components/LandingPage";
 
 class App extends Component {
   render() {
+    console.log("HERE", this.props)
+
     return (
       <div className="App">
         <header className="App-header">
@@ -23,4 +26,18 @@ class App extends Component {
   }
 }
 
-export default App;
+const mapStateToProps = (state) => {
+  console.log("Testing: ", state)
+  return {
+      categories: state.catReducer,
+      posts: state.postsReducer
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {}
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
+
+
