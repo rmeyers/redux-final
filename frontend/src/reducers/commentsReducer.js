@@ -1,10 +1,10 @@
-const postsReducer = (state = {}, action) => {
+const commentsReducer = (state = {}, action) => {
 
     switch (action.type) {
-        case 'GET_POSTS':
+        case 'GET_COMMENTS':
             state = {
                 ...state,
-                posts: action.payload
+                comments: action.payload
             };
             break;
         default:
@@ -13,4 +13,4 @@ const postsReducer = (state = {}, action) => {
     return state;
 };
 
-export default postsReducer;
+export default commentsReducer;

@@ -1,13 +1,13 @@
 import {createStore, combineReducers, applyMiddleware} from "redux";
 import thunk from "redux-thunk";
 
-import catReducer from "./reducers/catReducer";
 import postsReducer from "./reducers/postsReducer";
+import commentsReducer from "./reducers/commentsReducer";
 
 export default createStore(
     combineReducers({
-        catReducer,
-        postsReducer
+        postsReducer,
+        commentsReducer
     }),
     {},
     applyMiddleware(thunk)

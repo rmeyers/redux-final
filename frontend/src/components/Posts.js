@@ -1,40 +1,78 @@
-import React from 'react'
-import { Media, DropdownButton, MenuItem } from 'react-bootstrap'
+import React, { Component } from 'react'
+import { DropdownButton, MenuItem } from 'react-bootstrap'
+import { Link } from 'react-router-dom'
+import { Post } from "./Post";
+import { getPosts, incRating, decRating } from '../actions/index'
+import {connect} from "react-redux";
 
-export const Posts = () => {
+class Posts extends Component {
+  state = {
+    sortBy: 'timestamp'
+  }
+
+  componentWillMount() {
+    this.props.getPosts();
+  }
+
+  sortBy = (event) => {
+    this.setState(() => ({
+      sortBy: event
+    }))
+  }
+
+  render() {
+    if ('posts' in this.props.posts) {
+      var posts = this.props.posts.posts
+
+      // Filter based on the selection by the user
+      const filterBy = this.props.filterBy
+      if (filterBy !== 'all') {
+        posts = posts.filter(post => post.category === this.props.filterBy)
+      }
+      const sortMetric = this.state.sortBy
+      posts = posts.sort(function(a, b) {
+        return parseInt(b[sortMetric], 10) - parseInt(a[sortMetric], 10)
+      })
+
+    } else {
+      posts = []
+    }
+
     return (
         <div>
           <h1>Posts</h1>
-          <div className="nav">
-            <button className="btn btn-primary">Add Post</button>
-            <DropdownButton
-              title={'Sort By'}
-              id="3"
-            >
-              <MenuItem eventKey="date" active>Date</MenuItem>
-              <MenuItem eventKey="rating">Rating</MenuItem>
+          <div>
+            <Link to="/create-post"><button className="btn btn-primary">Add Post</button></Link>
+            <DropdownButton title="Sort By" id="SortByDropdown" onSelect={ this.sortBy }>
+              <MenuItem eventKey="timestamp">Date</MenuItem>
+              <MenuItem eventKey="voteScore">Rating</MenuItem>
             </DropdownButton>
-          </div>
-          <Media className="post">
-            <Media.Body>
-              <div className="row">
-                <div className="col-sm-9">
-                  <Media.Heading>Media Heading</Media.Heading>
-                  <p>By Author Name</p>
-                  <p>
-                    Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque
-                    ante sollicitudin commodo. Cras purus odio, vestibulum in vulputate at,
-                    tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate
-                    fringilla. Donec lacinia congue felis in faucibus.
-                  </p>
-                </div>
-                <div className="col-sm-3 post-info">
-                  <p>Timestamp</p>
-                  <p>Rating</p>
-                </div>
-              </div>
-            </Media.Body>
-          </Media>
+          </div><br />
+          { posts.map((post) => (
+            <Post
+              key={post.id}
+              thisPost={post}
+              incRating={(postId) => this.props.incRating(postId)}
+              decRating={(postId) => this.props.decRating(postId)}
+            />
+          ))}
         </div>
     );
+  };
 };
+
+const mapStateToProps = (state) => {
+  return {
+      posts: state.postsReducer
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+      getPosts: () => dispatch(getPosts()),
+      incRating: (postId) => dispatch(incRating(postId)),
+      decRating: (postId) => dispatch(decRating(postId))
+    }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Posts);
