@@ -12,6 +12,7 @@ To get started:
     - `node server`
 * In another terminal window, navigate to the frontend file
     - `cd frontend`
+    - `npm install`
     - `npm start`
 
 Author: Ryan Meyers, Feb 2018
