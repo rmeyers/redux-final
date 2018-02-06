@@ -4,6 +4,8 @@ import { Link } from 'react-router-dom'
 
 export const Post = (props) => {
     const post = props.thisPost
+
+    // Note to self: This 'new' looks like it's required so it doesn't read the current time.
     const date = new Date(post.timestamp).toString()
 
     return (

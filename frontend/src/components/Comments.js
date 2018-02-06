@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { Media } from 'react-bootstrap'
 import Modal from 'react-modal';
-// import { Link } from 'react-router-dom'
 
 class Comments extends Component {
 
@@ -103,10 +102,10 @@ class Comments extends Component {
                       Edit
                     </button>
                     <button
-                        className="btn btn-danger"
-                        onClick={() => this.openDeleteModal(comment)}
+                      className="btn btn-danger"
+                      onClick={() => this.openDeleteModal(comment)}
                     >
-                        Delete
+                      Delete
                     </button>
                   </div>
                 </div>
@@ -114,6 +113,7 @@ class Comments extends Component {
             </Media>
           </div>
         ))}
+
         <Modal
             className='newModal'
             overlayClassName='overlay'

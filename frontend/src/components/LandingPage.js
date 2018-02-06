@@ -5,6 +5,7 @@ import Posts from "./Posts";
 class LandingPage extends Component {
 
   state = {
+    // This is passed down into the Posts component further down.
     filterBy: 'all'
   }
 

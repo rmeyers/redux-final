@@ -2,26 +2,27 @@ import React, { Component } from 'react'
 import {connect} from "react-redux";
 import Modal from 'react-modal';
 import { getPosts, getComments, incRating, decRating, addComment, deletePost } from '../actions/index'
-import { editComment, deleteComment, upvoteComment, downvoteComment, editPost } from '../actions/index'
+import { editComment, deleteComment, editPost } from '../actions/index'
 import Comments from "./Comments";
 
 class PostDetail extends Component {
     constructor(props) {
       super(props);
       this.state = {
+        // Modal states, default start closed
         commentModal: false,
         deleteModal: false,
         editModal: false,
+
+        // Variables for comment and post information
         commentAuthor: '',
         commentBody: '',
         postId: '',
-        author: '',
-        body: '',
-        category: '',
-        title: '',
+        post: {},
         date: ''
       };
 
+      // Bind two functions here so they have access to this.state, I think?
       this.handleInputChange = this.handleInputChange.bind(this);
       this.handleCommentInputChange = this.handleCommentInputChange.bind(this);
     }
@@ -45,6 +46,7 @@ class PostDetail extends Component {
         })
     }
 
+    // Changes local state for comment info as it's changed
     handleCommentInputChange(event) {
       const target = event.target;
       const value = target.type === 'checkbox' ? target.checked : target.value;
@@ -55,6 +57,7 @@ class PostDetail extends Component {
       })
     }
 
+    // Changes local state for post info as it's changed
     handleInputChange(event) {
       const target = event.target;
       const value = target.type === 'checkbox' ? target.checked : target.value;
@@ -335,8 +338,6 @@ const mapDispatchToProps = (dispatch) => {
         editPost: (content) => dispatch(editPost(content)),
         editComment: (content) => dispatch(editComment(content)),
         deleteComment: (content) => dispatch(deleteComment(content)),
-        upvoteComment: (commentId) => dispatch(upvoteComment(commentId)),
-        downvoteComment: (commentId) => dispatch(downvoteComment(commentId))
     }
 };
 
