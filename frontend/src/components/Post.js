@@ -1,34 +1,112 @@
-import React from 'react'
+import React, { Component } from 'react'
 import { Media } from 'react-bootstrap'
+import {connect} from "react-redux";
 import { Link } from 'react-router-dom'
+import DeleteModal from "./DeleteModal";
+import EditModal from "./EditModal";
+import { getComments } from '../actions/index'
 
-export const Post = (props) => {
-    const post = props.thisPost
+class Post extends Component {
+    state = {
+      deleteModal: false,
+      editModal: false
+    }
 
-    // Note to self: This 'new' looks like it's required so it doesn't read the current time.
-    const date = new Date(post.timestamp).toString()
+    openDeleteModal = () => {
+        this.setState(() => ({
+            deleteModal: true
+        }))
+    }
 
-    return (
-      <Media className="post">
-        <Media.Body>
-          <div className="row">
-            <div className="col-sm-9">
-              <Link to={"/post-detail/" + post.id}><Media.Heading>{ post.title }</Media.Heading></Link>
-              <p>By { post.author }</p>
-              <p>
-                { post.body }
-              </p>
-            </div>
-            <div className="col-sm-3 post-info">
-              <p>{ date }</p>
-              <p>
-                <button className="btn" onClick={() => props.decRating(post.id)}>-</button>
-                  { post.voteScore }
-                <button className="btn" onClick={() => props.incRating(post.id)}>+</button>
-              </p>
-            </div>
-          </div>
-        </Media.Body>
-      </Media>
-    );
+    closeDeleteModal = () => {
+        this.setState(() => ({
+            deleteModal: false
+        }))
+    }
+    openEditModal = () => {
+      this.setState(() => ({
+          editModal: true
+      }))
+    }
+
+    closeEditModal = () => {
+        this.setState(() => ({
+            editModal: false
+        }))
+    }
+
+    render () {
+      const post = this.props.thisPost
+      const { deleteModal, editModal } = this.state
+
+      // Note to self: This 'new' looks like it's required so it doesn't read the current time.
+      const date = new Date(post.timestamp).toString()
+
+      return (
+        <div>
+          <Media className="post">
+            <Media.Body>
+              <div className="row">
+                <div className="col-sm-9">
+                  <Link to={"/" + post.category + "/" + post.id}><Media.Heading>{ post.title }</Media.Heading></Link>
+                  <p>By { post.author }</p>
+                  <p>
+                    { post.body }
+                  </p>
+                  <button
+                      className="btn btn-info"
+                      onClick={this.openEditModal}
+                  >
+                      Edit Post
+                  </button>
+                  <button
+                      className="btn btn-danger"
+                      onClick={this.openDeleteModal}
+                  >
+                    Delete Post
+                  </button>
+
+                </div>
+                <div className="col-sm-3 post-info">
+                  <p>{ date }</p>
+                  <p>
+                    <button className="btn" onClick={() => this.props.decRating(post.id)}>-</button>
+                      { post.voteScore }
+                    <button className="btn" onClick={() => this.props.incRating(post.id)}>+</button>
+                  </p>
+                </div>
+              </div>
+            </Media.Body>
+          </Media>
+
+          <EditModal
+            isOpen={ editModal }
+            post={ post }
+            onRequestClose={this.closeEditModal}
+          />
+
+          <DeleteModal
+            isOpen={ deleteModal }
+            onRequestClose={this.closeDeleteModal}
+            closeModal={this.closeDeleteModal}
+            postId={ post.id }
+          />
+        </div>
+      );
+    };
 };
+
+const mapStateToProps = (state) => {
+  return {
+      comments: state.commentsReducer.comments
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        getComments: (postId) => dispatch(getComments(postId)),
+    }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Post);
+

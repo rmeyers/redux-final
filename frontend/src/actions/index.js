@@ -65,6 +65,9 @@ export const editPost = (content) => dispatch => {
             'author': content.author,
             'timestamp': Date.now()
         })
+        .then(result =>
+            dispatch(getPosts())
+        )
 }
 
 // Delete a post
@@ -111,11 +114,19 @@ export const deleteComment = (content) => dispatch => {
 
 // These two functions are currently unused.
 export const upvoteComment = (commentId) => dispatch => {
-    console.log("Upvote comment")
+    axios.post(URL + `/comments/` + commentId,
+        {'option': 'upVote'})
+        .then(result =>
+            dispatch(getComments())
+        )
 }
 
 export const downvoteComment = (commentId) => dispatch => {
-    console.log("Downvote comment")
+    axios.post(URL + `/comments/` + commentId,
+        {'option': 'downVote'})
+        .then(result =>
+            dispatch(getComments())
+        )
 }
 
 // If getting the posts was successful, dispatch on to reducer.

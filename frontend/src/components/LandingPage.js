@@ -1,24 +1,52 @@
 import React, { Component } from 'react'
 import { Table } from 'react-bootstrap'
-import Posts from "./Posts";
+import { Link } from 'react-router-dom'
+import Posts from "./Posts"
+import NoMatch from "./PageNotFound";
+
 
 class LandingPage extends Component {
-
   state = {
     // This is passed down into the Posts component further down.
     filterBy: 'all'
   }
 
-  filterBy = (event) => {
-    const target = event.target
-    const name = target.name
+  componentDidMount() {
+    this.filterBy(this.props.match.params)
+  }
+
+  // Need to use this because otherwise the function filterBy
+  // would run before props has even been updated.
+  componentWillReceiveProps(nextProps) {
+    this.filterBy(nextProps.match.params)
+  }
+
+  filterBy = (params) => {
+    var catList = [undefined, '', 'all', 'redux', 'react', 'udacity'];
+    var category = params.category
+
+    if (catList.includes(category)) {
+      if (category === undefined || category === '') {
+        category = 'all'
+      }
+    }
 
     this.setState({
-      filterBy: name
+      filterBy: category
     })
   }
 
   render () {
+
+    var catList = [undefined, '', 'all', 'redux', 'react', 'udacity'];
+    var thisCategory = this.props.match.params.category
+
+    if(catList.includes(thisCategory) === false) {
+      return (
+        <NoMatch />
+      )
+    }
+
     return (
         <div className="container">
           <div className="row">
@@ -31,16 +59,16 @@ class LandingPage extends Component {
                   </thead>
                   <tbody>
                     <tr>
-                      <td><a name='all' onClick={this.filterBy}>All</a></td>
+                      <td><Link to='/' name='all'>All</Link></td>
                     </tr>
                     <tr>
-                      <td><a name='react' onClick={this.filterBy}>React</a></td>
+                      <td><Link to='/react' name='react'>React</Link></td>
                     </tr>
                     <tr>
-                      <td><a name='redux' onClick={this.filterBy}>Redux</a></td>
+                      <td><Link to='/redux' name='redux'>Redux</Link></td>
                     </tr>
                     <tr>
-                      <td><a name='udacity' onClick={this.filterBy}>Udacity</a></td>
+                      <td><Link to='/udacity' name='udacity'>Udacity</Link></td>
                     </tr>
                   </tbody>
               </Table>

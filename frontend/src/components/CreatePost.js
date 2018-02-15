@@ -18,7 +18,7 @@ class CreatePost extends Component {
 
     handleInputChange(event) {
       const target = event.target;
-      const value = target.type === 'checkbox' ? target.checked : target.value;
+      const value = target.value;
       const name = target.name;
 
       this.setState({
@@ -46,13 +46,17 @@ class CreatePost extends Component {
                         placeholder='Author Name'
                         onChange={this.handleInputChange}
                       />
-              Category: <input
-                        className='new-post-input'
-                        name='category'
-                        type='text'
-                        placeholder='Category'
-                        onChange={this.handleInputChange}
-                      />
+
+                      <div className="form-group new-post-input">
+                        <label htmlFor="category">Category:</label>
+                        <select className="form-control" id="category" name="category" onChange={this.handleInputChange}>
+                          <option value=''></option>
+                          <option value='react'>React</option>
+                          <option value='redux'>Redux</option>
+                          <option value='udacity'>Udacity</option>
+                        </select>
+                      </div>
+
               Content: <input
                         className='new-post-input'
                         name='body'

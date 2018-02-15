@@ -95,6 +95,11 @@ class Comments extends Component {
                     <p>Comment by: { comment.author }</p>
                   </div>
                   <div className="col-sm-3 post-info">
+                    <p>
+                      <button className="btn" onClick={() => this.props.downvoteComment(comment.id)}>-</button>
+                        { comment.voteScore }
+                      <button className="btn" onClick={() => this.props.upvoteComment(comment.id)}>+</button>
+                    </p>
                     <button
                       className="btn btn-info"
                       onClick={() => this.openCommentModal(comment)}

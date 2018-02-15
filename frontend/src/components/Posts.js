@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import { DropdownButton, MenuItem } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
-import { Post } from "./Post";
-import { getPosts, incRating, decRating } from '../actions/index'
+import Post from "./Post";
+import { getPosts, getComments, incRating, decRating } from '../actions/index'
 import {connect} from "react-redux";
 
 class Posts extends Component {
@@ -20,9 +20,23 @@ class Posts extends Component {
     }))
   }
 
+  // findComments = (posts) => {
+  //   for (var i = 0; i < posts.length; i++) {
+  //     var post = posts[i]
+  //     const id = post.id
+  //     this.props.getComments()
+  //     const commentsList = this.props.comments
+  //     console.log(this.props)
+  //     const numComments = commentsList.length
+  //     post['numComments'] = numComments
+  //   }
+  //   return posts
+  // }
+
   render() {
     if ('posts' in this.props.posts) {
       var posts = this.props.posts.posts
+      var comments = this.props.comments
 
       // Filter based on the selection by the user
       const filterBy = this.props.filterBy
@@ -33,6 +47,7 @@ class Posts extends Component {
       posts = posts.sort(function(a, b) {
         return parseInt(b[sortMetric], 10) - parseInt(a[sortMetric], 10)
       })
+      // posts = this.findComments(posts)
 
     } else {
       posts = []
@@ -54,6 +69,7 @@ class Posts extends Component {
               thisPost={post}
               incRating={(postId) => this.props.incRating(postId)}
               decRating={(postId) => this.props.decRating(postId)}
+              comments={ comments }
             />
           ))}
         </div>
@@ -63,13 +79,15 @@ class Posts extends Component {
 
 const mapStateToProps = (state) => {
   return {
-      posts: state.postsReducer
+      posts: state.postsReducer,
+      comments: state.commentsReducer.comments
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
       getPosts: () => dispatch(getPosts()),
+      getComments: () => dispatch(getComments()),
       incRating: (postId) => dispatch(incRating(postId)),
       decRating: (postId) => dispatch(decRating(postId))
     }

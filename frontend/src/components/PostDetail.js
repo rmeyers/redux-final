@@ -1,9 +1,12 @@
 import React, { Component } from 'react'
 import {connect} from "react-redux";
 import Modal from 'react-modal';
-import { getPosts, getComments, incRating, decRating, addComment, deletePost } from '../actions/index'
-import { editComment, deleteComment, editPost } from '../actions/index'
+import { getPosts, getComments, incRating, decRating, addComment, upvoteComment, downvoteComment } from '../actions/index'
+import { editComment, deleteComment } from '../actions/index'
 import Comments from "./Comments";
+import DeleteModal from "./DeleteModal";
+import EditModal from "./EditModal";
+import NoMatch from "./PageNotFound";
 
 class PostDetail extends Component {
     constructor(props) {
@@ -23,27 +26,11 @@ class PostDetail extends Component {
       };
 
       // Bind two functions here so they have access to this.state, I think?
-      this.handleInputChange = this.handleInputChange.bind(this);
       this.handleCommentInputChange = this.handleCommentInputChange.bind(this);
     }
 
     componentWillMount = () => {
-        const id = this.props.match.params.post_id
-        this.props.getComments(id)
-
-        var post = {title: '', author: '', category: '', voteScore: 0, body: '', id:''};
-        var date = ''
-        if (this.props.posts !== undefined && this.props.posts.length > 0) {
-            post = this.props.posts.find(function(element) {
-                return element.id === id
-            })
-            date = Date(post.timestamp).toString()
-        }
-
-        this.setState({
-            post: post,
-            date: date
-        })
+        this.props.getPosts()
     }
 
     // Changes local state for comment info as it's changed
@@ -54,20 +41,6 @@ class PostDetail extends Component {
 
       this.setState({
         [name]: value
-      })
-    }
-
-    // Changes local state for post info as it's changed
-    handleInputChange(event) {
-      const target = event.target;
-      const value = target.type === 'checkbox' ? target.checked : target.value;
-      const name = target.name;
-
-      var currentPost = Object.assign({}, this.state.post)
-      currentPost[name] = value
-
-      this.setState({
-        post: currentPost
       })
     }
 
@@ -102,14 +75,6 @@ class PostDetail extends Component {
         }))
     }
 
-    submitEdit = (content) => {
-        this.setState(() => ({
-            editModal: false
-        }))
-
-        this.props.editPost(content)
-    }
-
     openDeleteModal = () => {
         this.setState(() => ({
             deleteModal: true
@@ -123,16 +88,25 @@ class PostDetail extends Component {
     }
 
     render() {
-        const { commentModal, deleteModal, editModal, post } = this.state
+        const { commentModal, deleteModal, editModal } = this.state
         const id = this.props.match.params.post_id
+        var post = {title: '', author: '', category: '', voteScore: 0, body: '', id:''};
+        var date = ''
 
         if (this.props.posts !== undefined && this.props.posts.length > 0) {
-            var votePost = this.props.posts.find(function(element) {
+            post = this.props.posts.find(function(element) {
                 return element.id === id
             })
-            var score = votePost.voteScore
-            var date = new Date(votePost.timestamp).toString()
+            if (post === undefined) {
+              return (
+                <NoMatch />
+              )
+            }
+            var score = post.voteScore
+            date = new Date(post.timestamp).toString()
         }
+
+        this.props.getComments(id)
 
         return (
             <div>
@@ -180,6 +154,8 @@ class PostDetail extends Component {
                     comments={ this.props.comments }
                     editComment={ (content) => this.props.editComment(content)}
                     deleteComment={ (content) => this.props.deleteComment(content)}
+                    upvoteComment={(commentId) => this.props.upvoteComment(commentId)}
+                    downvoteComment={(commentId) => this.props.downvoteComment(commentId)}
                   />
                 </div>
 
@@ -227,94 +203,17 @@ class PostDetail extends Component {
                     </button>
                 </Modal>
 
-                <Modal
-                  className='editModal'
-                  overlayClassName='overlay'
+                <EditModal
                   isOpen={ editModal }
+                  post={ post }
                   onRequestClose={this.closeEditModal}
-                  contentLabel='Modal'
-                  ariaHideApp={false}
-                >
-                    <h3>
-                      Edit Post
-                    </h3>
-                    <input
-                      className='post-comment'
-                      type='text'
-                      name='title'
-                      placeholder='Title'
-                      defaultValue={ post.title }
-                      onChange={this.handleInputChange}
-                    /><br />
-                    <input
-                      className='post-comment'
-                      type='text'
-                      name='author'
-                      placeholder='Author'
-                      defaultValue={ post.author }
-                      onChange={this.handleInputChange}
-                    /><br />                    <input
-                      className='post-comment'
-                      type='text'
-                      name='category'
-                      placeholder='Category'
-                      defaultValue={ post.category }
-                      onChange={this.handleInputChange}
-                    /><br />
-                    <input
-                      className='post-comment'
-                      type='text'
-                      name='body'
-                      placeholder='Body'
-                      defaultValue={ post.body }
-                      onChange={this.handleInputChange}
-                    /><br />
-                    <button
-                      className='btn btn-default'
-                      onClick={this.closeEditModal}
-                      >
-                        Cancel
-                    </button>
-                    <button
-                      className='btn btn-success'
-                      onClick={() => this.submitEdit({
-                        author: post.author,
-                        body: post.body,
-                        category: post.category,
-                        title: post.title,
-                        id: post.id
-                    })}
-                      >
-                        Edit Post
-                    </button>
-                </Modal>
+                />
 
-                <Modal
-                  className='deleteModal'
-                  overlayClassName='overlay'
+                <DeleteModal
                   isOpen={ deleteModal }
+                  postId={ post.id }
                   onRequestClose={this.closeDeleteModal}
-                  contentLabel='Modal'
-                  ariaHideApp={false}
-                >
-                    <h3>
-                      Are you sure you want to delete this post?
-                    </h3>
-                    <button
-                      className='btn btn-default'
-                      onClick={this.closeDeleteModal}
-                      >
-                        Cancel
-                    </button>
-                    <a href="/">
-                        <button
-                            className="btn btn-danger"
-                            onClick={() => this.props.deletePost(post.id)}
-                          >
-                            Yes, delete post
-                        </button>
-                    </a>
-                </Modal>
+                />
             </div>
         );
     };
@@ -334,10 +233,10 @@ const mapDispatchToProps = (dispatch) => {
         incRating: (postId) => dispatch(incRating(postId)),
         decRating: (postId) => dispatch(decRating(postId)),
         addComment: (content) => dispatch(addComment(content)),
-        deletePost: (postId) => dispatch(deletePost(postId)),
-        editPost: (content) => dispatch(editPost(content)),
         editComment: (content) => dispatch(editComment(content)),
         deleteComment: (content) => dispatch(deleteComment(content)),
+        upvoteComment: (commentId) => dispatch(upvoteComment(commentId)),
+        downvoteComment: (commentId) => dispatch(downvoteComment(commentId)),
     }
 };
 
