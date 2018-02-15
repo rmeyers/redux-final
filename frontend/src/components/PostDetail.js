@@ -1,8 +1,7 @@
 import React, { Component } from 'react'
 import {connect} from "react-redux";
 import Modal from 'react-modal';
-import { getPosts, getComments, incRating, decRating, addComment, upvoteComment, downvoteComment } from '../actions/index'
-import { editComment, deleteComment } from '../actions/index'
+import * as actions from '../actions/index'
 import Comments from "./Comments";
 import DeleteModal from "./DeleteModal";
 import EditModal from "./EditModal";
@@ -226,19 +225,7 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        getPosts: () => dispatch(getPosts()),
-        getComments: (postId) => dispatch(getComments(postId)),
-        incRating: (postId) => dispatch(incRating(postId)),
-        decRating: (postId) => dispatch(decRating(postId)),
-        addComment: (content) => dispatch(addComment(content)),
-        editComment: (content) => dispatch(editComment(content)),
-        deleteComment: (content) => dispatch(deleteComment(content)),
-        upvoteComment: (commentId) => dispatch(upvoteComment(commentId)),
-        downvoteComment: (commentId) => dispatch(downvoteComment(commentId)),
-    }
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(PostDetail);
+// After importing all those functions as actions, can simply add them in below
+// Note: No need for mapDispatchToProps here.
+export default connect(mapStateToProps, actions)(PostDetail);
 

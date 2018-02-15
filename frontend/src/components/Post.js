@@ -96,17 +96,20 @@ class Post extends Component {
     };
 };
 
-const mapStateToProps = (state) => {
+// Can pass state or either of the reducers in here.
+const mapStateToProps = (commentsReducer) => {
   return {
-      comments: state.commentsReducer.comments
+      comments: commentsReducer.comments
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        getComments: (postId) => dispatch(getComments(postId)),
-    }
-};
+// const mapDispatchToProps = (dispatch) => {
+//     return {
+//         getComments: (postId) => dispatch(getComments(postId)),
+//     }
+// };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Post);
+// Rather than have the above mapDispatchToProps function, can
+// simply directly add getComments to props using this ES6 approach
+export default connect(mapStateToProps, { getComments })(Post);
 

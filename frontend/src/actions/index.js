@@ -1,10 +1,10 @@
 // Used axios as the HTTP request package
 import axios from 'axios';
+import * as config from '../helper/config'
 
-// Set default URL for backend server
-const URL = 'http://localhost:3001';
 // Just set the default authorization header to my name for now
-axios.defaults.headers.common['Authorization'] = 'Ryan';
+axios.defaults.headers.common['Authorization'] = config.auth;
+const URL = config.localUrl
 
 export const GET_POSTS = 'GET_POSTS'
 export const GET_COMMENTS = 'GET_COMMENTS'
